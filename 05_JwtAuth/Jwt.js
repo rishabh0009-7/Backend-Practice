@@ -1,15 +1,19 @@
+// jwt based authentication
+
 import  express from "express"
+import jwt from "jsonwebtoken"
 const app = express()
 
 app.use(express.json())
 
-const user = [];
+const users = [];
+const JWT_SECRET = "USER_APP"
 
 app.post("/signup", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  user.push({
+  users.push({
     username,
     password,
   });
@@ -19,25 +23,25 @@ app.post("/signup", (req, res) => {
   });
 });
 
-const JWT_SECRET = "USER_APP"
+
 app.post("/signin", (req, res) => {
   const username = req.body.username;
   const password = req.body.password;
 
-  const user = user.find(
+  const existingUser = users.find(
     (user) => user.username == username && user.password == password
   );
-  if (user) {
+  if (existingUser) {
     const token = jwt.sign({
-        username:user.username
+        username:existingUser.username
 
     },JWT_SECRET);
-    user.token = token 
+    existingUser.token = token 
 
     res.send({
       token,
     });
-    console.log(user);
+    console.log(existingUser);
   } else {
     res.status(403).send({
       message: "invalid username or password",
@@ -45,22 +49,43 @@ app.post("/signin", (req, res) => {
   }
 });
 
-app.get("/me", (req, res) => {
-  const token = req.header.authorization;
+function auth (req,res,next){
+  const token = req.headers.authorization 
+  if(token){
+    jwt.verify(token , JWT_SECRET, (err,decoded)=>{
+      if(err){
+        res.status(401).send({
+          message:"unauthorized "
+        })
+      }else{
+        req.user= decoded
+        next()
 
-  
+      }
 
-  const user = user.find((user) => user.token === token);
-  if (user) {
-    res.send({
-      username: user.username,
-    });
-  } else {
+
+    })
+  }else{
     res.status(401).send({
-      message: "unauthorized",
+      message:"unauthorized"
+    })  }
+
+}
+
+app.get('/me', auth , (req,res)=>{
+  const loggedInUser = users.find(user=>user.username === req.user.username)
+  if(loggedInUser){
+    res.send({
+      username: loggedInUser.username,
     });
+   
+  }else{
+    res.status(401).send({
+      message :"unauthorized"
+
+    })
   }
-});
+})
 
 app.listen(3000);
   
