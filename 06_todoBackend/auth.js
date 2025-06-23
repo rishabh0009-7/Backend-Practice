@@ -9,7 +9,7 @@ function auth(req,res,next){
 
     }else{
         res.status(403).json({
-           messagew :"incorrect creds" 
+           message :"incorrect creds" 
         })
     }
 
