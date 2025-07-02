@@ -1,6 +1,7 @@
 import express, { json } from"express"
 import{UserModel , TodoModel} from db.js
 import { TbCookieMan } from "react-icons/tb"
+import {auth, JWT_SECRET} from auth.js
 
 
 const app = express()
@@ -10,7 +11,7 @@ app.use(express.json())
 
 const JWT_SECRET = "S3CRET "
 
-app.post('/signup', async function(){
+app.post('/signup', async function(req,res){
 
     const name = req.body.name;
     const email = req.body.email;
@@ -34,7 +35,7 @@ app.post('/signup', async function(){
 
 
 
-app.post("/signin", function () {
+app.post("/signin", async function (req,res) {
     const name = req.body.name;
     const email = req.body.email;
     const password = req.body.password;
@@ -70,7 +71,7 @@ app.post("/signin", function () {
 });
 
 
-app.post("/todo", function () {});
+app.post("/todo", function (req,res) {});
 
 
-app.post("/todos", function () {});
+app.post("/todos", function (req,res) {});
