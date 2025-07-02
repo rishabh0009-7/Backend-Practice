@@ -3,30 +3,35 @@ const JWT_SECRET = "S3CRET"
 
 
 function auth(req,res,next){
-    const Token  = req.headers.authorization;
+    const authHeader = req.headers.authorization;
 
-    const response = jwt.verify(Token, JWT_SECRET)
-
-    if(response){
-        req.userId = Token.userId
-        next()
-    }else{
+    if(!authHeader || !authHeader.startsWith("Bearer ")){
         res.status(401).json({
-            message :"incoorect credential "
+            message :"unauthorized:no token provided "
         })
     }
 
+   
+    const token = authHeader.split(" ")[1];
 
 
+    try {
 
-    module .exports= {
-        auth ,
-        JWT_SECRET
+        const decoded = jwt.verify(token , JWT_SECRET)
 
+        req.userId = decoded.id
+        next()
+        
+    } catch (error) {
+        res.status(401).json({
+            message :"invalid token"
+        })
+        
     }
 
+}
 
-
-
-
+export {
+    auth,
+    JWT_SECRET
 }
