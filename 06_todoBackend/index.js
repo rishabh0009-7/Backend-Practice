@@ -48,12 +48,20 @@ app.post("/signin", function () {
 
     if(existingUser){
         const Token = jwt.sign({
+            id:response._id.tostring()
 
         }, JWT_SECRET)
 
         res.json({
             Token
         })
+    }else{
+        res.status(401).json({
+            message :
+            "inocrrect credentials "
+
+        })
+        
     }
 
 
