@@ -1,68 +1,68 @@
-import express from "express"
-import jwt from jsonwebtoken
-const JWT_SECRET = "TODO-APP"
-const {UserModel, TodoModel}= require('./db')
-const {auth, JWT_SECRET}= require('./auth')
+import express, { json } from"express"
+import{UserModel , TodoModel} from db.js
+import { TbCookieMan } from "react-icons/tb"
+
+
 const app = express()
+
 
 app.use(express.json())
 
+const JWT_SECRET = "S3CRET "
 
-app.post('/signup',async(req,res)=>{
-    const email = req.body.email;
+app.post('/signup', async function(){
+
     const name = req.body.name;
-    const  password = req.body.password
+    const email = req.body.email;
+    const password = req.body.password;
 
 
-    await UserModel.create({
+    await UserModel.create ({
         email:email,
-        password:password,
-        name:name
+        name :name ,
+        password:password 
 
 
-    })
+    }) 
 
     res.json({
-        message:"you are signed up"
+        message :"you are signed up"
     })
 
 
 })
 
-app.post("/login",async (req, res) => {
-    const email = req.body.email;
+
+
+app.post("/signin", function () {
     const name = req.body.name;
+    const email = req.body.email;
     const password = req.body.password;
 
-   const response =  await UserModel.findOne({
-    email:email,
-    password:password,
-   })
 
-   if(response){
-    const token = jwt.sign({
-        id:response._id.toString()
+    const existingUser= UserModel.findOne({
+        email:email,
+        password:password 
 
     })
 
-    res.json({
-        token
-    })
+    if(existingUser){
+        const Token = jwt.sign({
 
-   }else{
-    res.status(401).json({
-        messsage:"incorrect creds"
-    })
-   }
+        }, JWT_SECRET)
+
+        res.json({
+            Token
+        })
+    }
+
 
 
 
 });
 
 
+app.post("/todo", function () {});
 
-app.post("/todo", (req, res) => {});
 
-app.get("/todos", (req, res) => {});
-
-app.listen(3000)
+app.post("/todos", function () {});
