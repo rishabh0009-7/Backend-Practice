@@ -1,24 +1,25 @@
 import mongoose from "mongoose"
 
-const schema = mongoose.schema ;
-const objectId = schema .objectId ;
 
-
-
-const User = new schema({
+const User = new Schema({
     name :String,
     email:{
         type:String,
         unique:true
     },
-    password:string
+    password:String
 })
 
 
-const Todo = new schema ({
-    userId :objectId,
-    title :string,
-    done: boolean
+const Todo = new Schema ({
+    userId :{
+        type :mongoose.Schema.Types.ObjectId,
+        ref:"User"
+
+
+    },
+    title :String,
+    done: Boolean
 })
 
 
@@ -27,8 +28,7 @@ const UserModel = mongoose.model ('users',User);
 const TodoModel = mongoose.model('todos',Todo)
 
 
-module .exports = {
+export{
     UserModel,
     TodoModel
 }
-

@@ -1,9 +1,9 @@
 import jwt from "jsonwebtoken"
-const JWT_SECRET = "S3CRET "
+const JWT_SECRET = "S3CRET"
 
 
 function auth(req,res,next){
-    const Token = req.headers.authorization;
+    const Token  = req.headers.authorization;
 
     const response = jwt.verify(Token, JWT_SECRET)
 
